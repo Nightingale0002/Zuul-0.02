@@ -31,7 +31,7 @@ class Room
 	//     Exits: north, west
 	public string GetLongDescription()
 	{
-		string str = "You are ";
+		string str = "You ";
 		str += description;
 		str += ".\n";
 		str += GetExitString();

@@ -1,15 +1,19 @@
 using System;
+using System.Dynamic;
+using System.Net.Sockets;
 
 class Game
 {
 	// Private fields
-	private Parser parser;
-	private Room currentRoom;
+
+	private Player player ;
+	private Parser parser ;
 
 	// Constructor
 	public Game()
 	{
 		parser = new Parser();
+		player = new Player();
 		CreateRooms();
 	}
 
@@ -17,43 +21,49 @@ class Game
 	private void CreateRooms()
 	{
 		// Create the rooms
-		Room outside = new Room("outside the main entrance of the university");
-		Room theatre = new Room("in a lecture theatre");
-		Room pub = new Room("in the campus pub");
-		Room lab = new Room("in a computing lab");
-		Room office = new Room("in the computing admin office");
-        Room test = new Room ("you are in the test room"); 
+		Room outside = new Room("are outside the main entrance of the university");
+		Room theatre = new Room("are in a lecture theatre");
+		Room pub = new Room("are in the campus pub");
+		Room lab = new Room("are in a computing lab");
+		Room office = new Room("are in the computing admin office");
+        Room test = new Room ("are in the test room"); 
+		Room the_woods = new Room ("are in a thick forest , all alone");
+		Room house = new Room ("see a log cabin");
+		Room living_room= new Room ("are in a living room ");
+		Room bathroom= new Room ("need to pee or something , what are you doing in the bathroom");
+		Room bedroom= new Room ("are in a bedroom.");    
+		
+
 		// Initialise room exits
 		outside.AddExit("east", theatre);
 		outside.AddExit("south", lab);
 		outside.AddExit("west", pub);
         outside.AddExit("up", test);
-		outside.AddExit("look" ,outside);
-		
+
         test.AddExit("west", pub);
         test.AddExit("down", outside);
-		test.AddExit ("look", test);
-
 
 		theatre.AddExit("west", outside);
-        theatre.AddExit("look", theatre);
+		theatre.AddExit("east",the_woods);
+
 
 		pub.AddExit("east", outside);
-        pub.AddExit("look", pub);
-
+      
 		lab.AddExit("north", outside);
 		lab.AddExit("east", office);
-		lab.AddExit("look" , lab);
 
+		the_woods.AddExit("north", house);
+
+		
 		office.AddExit("west", lab);
-		office.AddExit("look" ,office);
+		
 		// Create your Items here
 		// ...
 		// And add them to the Rooms
 		// ...
 
 		// Start game outside
-		currentRoom = outside;
+	  player.currentRoom = outside;
 	}
 
 	//  Main play routine. Loops until end of play.
@@ -82,7 +92,7 @@ class Game
 		Console.WriteLine("Zuul is a new, incredibly boring adventure game.");
 		Console.WriteLine("Type 'help' if you need help.");
 		Console.WriteLine();
-		Console.WriteLine(currentRoom.GetLongDescription());
+	Console.WriteLine(player.currentRoom.GetLongDescription());
 	}
 
 	// Given a command, process (that is: execute) the command.
@@ -98,8 +108,19 @@ class Game
 			return wantToQuit; // false
 		}
 
-		switch (command.CommandWord)
-		{
+		switch 	(command.CommandWord)
+		{	
+			case "status":
+			status() ;
+			break;
+
+			case "look": 
+			look();
+			break;
+			
+			case "blow": 
+			    Blowup();
+			  break;
 			case "help":
 				PrintHelp();
 				break;
@@ -109,8 +130,8 @@ class Game
 			case "quit":
 				wantToQuit = true;
 				break;
-			case "Blow" :	
-	        
+				
+			
 
 		}
 
@@ -146,14 +167,38 @@ class Game
 		string direction = command.SecondWord;
 
 		// Try to go to the next room.
-		Room nextRoom = currentRoom.GetExit(direction);
+		Room nextRoom = player.currentRoom.GetExit(direction);
 		if (nextRoom == null)
 		{
 			Console.WriteLine("There is no door to "+direction+"!");
 			return;
 		}
 
-		currentRoom = nextRoom;
-		Console.WriteLine(currentRoom.GetLongDescription());
+		player.currentRoom = nextRoom;
+		Console.WriteLine(player.currentRoom.GetLongDescription());
+	} 
+	
+	private void Blowup()
+	{
+		Console.WriteLine("you blow up.");
+		Console.WriteLine();
+		 
 	}
+	
+	private void look()
+	{
+		Console.WriteLine(player.currentRoom.GetLongDescription());
+
+	} 
+	
+	private void status()
+	{
+	
+		Console.WriteLine("you have" +player.health+"Live points");	
+
+
+	}
+
+	
+	
 }
