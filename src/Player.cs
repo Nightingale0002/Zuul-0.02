@@ -5,7 +5,6 @@ using System.Numerics;
 class Player
 {  
  
-    private bool dead;
     //fields
     public int health;
     // auto property
@@ -17,6 +16,8 @@ class Player
 
     
         health = 100;
+
+
 
     }
 

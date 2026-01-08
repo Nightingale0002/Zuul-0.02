@@ -194,10 +194,10 @@ class Game
 	private void status()
 	{
 	
-		Console.WriteLine("you have" +player.health+"Live points");	
+		Console.WriteLine("you have " +player.health+" Life points");
 
 
-	}
+    }
 
 	
 	
