@@ -9,7 +9,8 @@ class CommandLibrary
 	public CommandLibrary()
 	{
 		validCommands = new List<string>();
-
+		validCommands.Add("heal");
+		validCommands.Add("dmg");	
 		validCommands.Add("help");
 		validCommands.Add("go");
 		validCommands.Add("quit");

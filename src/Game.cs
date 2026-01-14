@@ -17,21 +17,23 @@ class Game
 		CreateRooms();
 	}
 
+
+
 	// Initialise the Rooms (and the Items)
 	private void CreateRooms()
 	{
 		// Create the rooms
-		Room outside = new Room("are outside the main entrance of the university");
-		Room theatre = new Room("are in a lecture theatre");
-		Room pub = new Room("are in the campus pub");
-		Room lab = new Room("are in a computing lab");
-		Room office = new Room("are in the computing admin office");
-        Room test = new Room ("are in the test room"); 
-		Room the_woods = new Room ("are in a thick forest , all alone");
-		Room house = new Room ("see a log cabin");
-		Room living_room= new Room ("are in a living room ");
-		Room bathroom= new Room ("need to pee or something , what are you doing in the bathroom");
-		Room bedroom= new Room ("are in a bedroom.");    
+		Room outside = new Room("are outside the main entrance of the university"," outside");
+		Room theatre = new Room("are in a lecture theatre","theatre");
+		Room pub = new Room("are in the campus pub","pub");
+		Room lab = new Room("are in a computing lab","lab");
+		Room office = new Room("are in the computing admin office","office");
+        Room test = new Room ("are in the test room","test"); 
+		Room the_woods = new Room ("are in a thick forest , all alone","the woods");
+		Room house = new Room ("see a log cabin","house");
+		Room living_room= new Room ("are in a living room ","living room");
+		Room bathroom= new Room ("need to pee or something , what are you doing in the bathroom","bathroom");
+		Room bedroom= new Room ("are in a bedroom.","bedroom");    
 		
 
 		// Initialise room exits
@@ -110,6 +112,14 @@ class Game
 
 		switch 	(command.CommandWord)
 		{	
+			case "dmg":
+			damageplayer(20);
+			break;
+
+			case "heal":
+			healplayer(20);
+			break;
+
 			case "status":
 			status() ;
 			break;
@@ -162,6 +172,7 @@ class Game
 			// if there is no second word, we don't know where to go...
 			Console.WriteLine("Go where?");
 			return;
+			
 		}
 
 		string direction = command.SecondWord;
@@ -196,9 +207,27 @@ class Game
 	
 		Console.WriteLine("you have " +player.health+" Life points");
 
+	
 
     }
 
-	
-	
+	private void damageplayer(int damage)
+	{
+		player.health -= damage;
+		if (player.health <= 0)
+		{
+			Console.WriteLine("you died");
+			Console.WriteLine("Game Over");
+			Environment.Exit(0);
+		}else {
+			Console.WriteLine("you have " +player.health+" Life points left");
+		}
+	}
+	private void healplayer(int heal)
+	{
+		player.health += heal;
+		Console.WriteLine("you have " +player.health+" Life points now");
+	}
+
+
 }

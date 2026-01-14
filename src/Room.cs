@@ -1,17 +1,21 @@
 using System.Collections.Generic;
+using System.Security.Principal;
 
 class Room
 {
 	// Private fields
 	private string description;
+	private string isname { get; set; }
 	private Dictionary<string, Room> exits; // stores exits of this room.
 
 	// Create a room described "description". Initially, it has no exits.
 	// "description" is something like "in a kitchen" or "in a court yard".
-	public Room(string desc)
+	public Room(string desc,string name)
 	{
 		description = desc;
 		exits = new Dictionary<string, Room>();
+
+		isname = name;
 	}
 
 	// Define an exit for this room.

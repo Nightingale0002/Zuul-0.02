@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\victushp\\Downloads\\Zuul\\Zuul\\Zuul.csproj",
+      "projectUniqueName": "C:\\Users\\victushp\\Documents\\Zuul\\Zuul\\Zuul.csproj",
       "projectName": "Zuul",
-      "projectPath": "C:\\Users\\victushp\\Downloads\\Zuul\\Zuul\\Zuul.csproj",
+      "projectPath": "C:\\Users\\victushp\\Documents\\Zuul\\Zuul\\Zuul.csproj",
       "packagesPath": "C:\\Users\\victushp\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\victushp\\Downloads\\Zuul\\Zuul\\obj\\",
+      "outputPath": "C:\\Users\\victushp\\Documents\\Zuul\\Zuul\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
