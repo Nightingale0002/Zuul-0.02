@@ -1,6 +1,7 @@
 using System;
 using System.Dynamic;
 using System.Net.Sockets;
+using System.Transactions;
 
 class Game
 {
@@ -17,21 +18,23 @@ class Game
 		CreateRooms();
 	}
 
+
+
 	// Initialise the Rooms (and the Items)
 	private void CreateRooms()
 	{
 		// Create the rooms
-		Room outside = new Room("are outside the main entrance of the university");
-		Room theatre = new Room("are in a lecture theatre");
-		Room pub = new Room("are in the campus pub");
-		Room lab = new Room("are in a computing lab");
-		Room office = new Room("are in the computing admin office");
-        Room test = new Room ("are in the test room"); 
-		Room the_woods = new Room ("are in a thick forest , all alone");
-		Room house = new Room ("see a log cabin");
-		Room living_room= new Room ("are in a living room ");
-		Room bathroom= new Room ("need to pee or something , what are you doing in the bathroom");
-		Room bedroom= new Room ("are in a bedroom.");    
+		Room outside = new Room("are outside the main entrance of the university"," outside");
+		Room theatre = new Room("are in a lecture theatre","theatre");
+		Room pub = new Room("are in the campus pub","pub");
+		Room lab = new Room("are in a computing lab","lab");
+		Room office = new Room("are in the computing admin office","office");
+        Room test = new Room ("are in the test room","test"); 
+		Room the_woods = new Room ("are in a thick forest , all alone","the woods");
+		Room house = new Room ("see a log cabin","house");
+		Room living_room= new Room ("are in a living room ","living room");
+		Room bathroom= new Room ("need to pee or something , what are you doing in the bathroom","bathroom");
+		Room bedroom= new Room ("are in a bedroom.","bedroom");    
 		
 
 		// Initialise room exits
@@ -54,16 +57,27 @@ class Game
 
 		the_woods.AddExit("north", house);
 
-		
+		house.AddExit("outside",the_woods);
+		house.AddExit("bathroom",bathroom);
+		house.AddExit("bedroom",bedroom);
+		house.AddExit("livingroom",living_room);
+
 		office.AddExit("west", lab);
 		
 		// Create your Items here
-		// ...
+	Item chainsaw = new Item (5,"Denji I never went to school either");
+	Item coin = new Item (1,"A gold coin glimmering with value");
+	Item bomb = new Item (10,"A big red button that says DO NOT PRESS");
+	Item bigdumbell = new Item (30,"A heavy dumbell, looks like you could lift it");
+	
 		// And add them to the Rooms
-		// ...
-
+	living_room.chest.Put("chainsaw", chainsaw);
+	player.backpack.Put("coin", coin);
+	lab.chest.Put("bomb", bomb);
+	outside.chest.Put("coin", coin);
+	pub.chest.Put("big dumbell", bigdumbell);
 		// Start game outside
-	  player.currentRoom = outside;
+	  player.CurrentRoom = outside;
 	}
 
 	//  Main play routine. Loops until end of play.
@@ -92,7 +106,7 @@ class Game
 		Console.WriteLine("Zuul is a new, incredibly boring adventure game.");
 		Console.WriteLine("Type 'help' if you need help.");
 		Console.WriteLine();
-	Console.WriteLine(player.currentRoom.GetLongDescription());
+	Console.WriteLine(player.CurrentRoom.GetLongDescription());
 	}
 
 	// Given a command, process (that is: execute) the command.
@@ -110,17 +124,33 @@ class Game
 
 		switch 	(command.CommandWord)
 		{	
-			case "status":
-			status() ;
-			break;
+			case "show":
 
+				break;
+			case "bag":
+				show();
+				break;
+			case "drop":
+				Put(command.SecondWord);
+				break;
+			case "take":
+				get(command.SecondWord);
+				break; 
+			case "dmg":
+				damageplayer(20);
+				break;
+			case "heal":
+				healplayer(20);
+				break;
+			case "status":
+				status() ;
+				break;
 			case "look": 
-			look();
-			break;
-			
-			case "blow": 
-			    Blowup();
-			  break;
+				look();
+				break;
+			case "Blow": 
+			    Blowup(999);
+			    break;
 			case "help":
 				PrintHelp();
 				break;
@@ -162,43 +192,105 @@ class Game
 			// if there is no second word, we don't know where to go...
 			Console.WriteLine("Go where?");
 			return;
+			
 		}
 
 		string direction = command.SecondWord;
 
 		// Try to go to the next room.
-		Room nextRoom = player.currentRoom.GetExit(direction);
+		Room nextRoom = player.CurrentRoom.GetExit(direction);
 		if (nextRoom == null)
 		{
 			Console.WriteLine("There is no door to "+direction+"!");
 			return;
 		}
 
-		player.currentRoom = nextRoom;
-		Console.WriteLine(player.currentRoom.GetLongDescription());
+		player.CurrentRoom = nextRoom;
+		Console.WriteLine(player.CurrentRoom.GetLongDescription());
 	} 
 	
-	private void Blowup()
+	private void Blowup(int damage)
 	{
-		Console.WriteLine("you blow up.");
-		Console.WriteLine();
-		 
+		player.health -= damage;
+		if (player.health <= 0)
+		{
+			Console.WriteLine("you exploded");
+			Console.WriteLine("Game Over");
+			Environment.Exit(0);		 
+		} else {
+			Console.WriteLine("how are you still alive after that?");
+		}
 	}
 	
 	private void look()
 	{
-		Console.WriteLine(player.currentRoom.GetLongDescription());
-
+		Console.WriteLine ("you " +player.CurrentRoom.GetShortDescription());
+		player.CurrentRoom.chest.showroom();
 	} 
 	
 	private void status()
 	{
 	
 		Console.WriteLine("you have " +player.health+" Life points");
-
-
     }
 
+	private void damageplayer(int damage)
+	{
+		player.health -= damage;
+		if (player.health <= 0)
+		{
+			Console.WriteLine("you died");
+			Console.WriteLine("Game Over");
+			Environment.Exit(0);
+		}else {
+			Console.WriteLine("you have " +player.health+" Life points left");
+		}
+	}
+	private void healplayer(int heal)
+	{
+		player.health += heal;
+		Console.WriteLine("you have " +player.health+" Life points now");
+	}
+
+	public void show()
+	{
+		player.backpack.show();
+	}
 	
+	private void get(string itemName)
+	{
+    Item item = player.CurrentRoom.chest.Get(itemName);
+
+    if (item == null)
+    	{
+        Console.WriteLine("That item is not here.");
+        return;
+    	}
+
+    if (player.backpack.Put(itemName, item))
+    	{
+        Console.WriteLine("You picked up the " + itemName);
+    	}
+    else
+   		 {
+        // terugleggen als inventory vol is
+        player.CurrentRoom.chest.Put(itemName, item);
+		Console.WriteLine("You are too weak.");
+    }}
+	private void Put(string itemName)
+		{
+    Item item = player.backpack.Get(itemName);
+
+    if (item == null)
+    {
+        Console.WriteLine("You don't have that item.");
+        return;
+    }
+
+    player.CurrentRoom.chest.Put(itemName, item);
+    Console.WriteLine("You dropped the " + itemName);
+	  }
 	
+
+
 }
